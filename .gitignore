@@ -21,3 +21,7 @@ libh2o.a
 libh2o.pc
 t-00unit-evloop.t
 t-00unit-libuv.t
+examples-http1client
+examples-simple
+examples-socket-client
+examples-websocket
