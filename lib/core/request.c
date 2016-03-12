@@ -25,6 +25,10 @@
 
 #define INITIAL_INBUFSZ 8192
 
+#ifdef WITH_ROUTER
+typedef h2o_handler_t* (*get_route_cb)(void*,h2o_req_t *);
+#endif
+
 struct st_delegate_request_deferred_t {
     h2o_req_t *req;
     h2o_handler_t *current_handler;
@@ -128,7 +132,7 @@ static void call_handlers(h2o_req_t *req, h2o_handler_t **handler)
         if ((*handler)->on_req(*handler, req) == 0)
             return;
 
-    h2o_send_error(req, 404, "File Not Found", "not found", 0);
+    h2o_send_error(req, 404, "File Not Found", "not found\n", 0);
 }
 
 static void process_hosted_request(h2o_req_t *req, h2o_hostconf_t *hostconf)
@@ -137,6 +141,21 @@ static void process_hosted_request(h2o_req_t *req, h2o_hostconf_t *hostconf)
 
     req->hostconf = hostconf;
     req->pathconf = &hostconf->fallback_path;
+
+#ifdef WITH_ROUTER
+    /**
+     * Get current router
+     */
+    h2o_handler_t *handler = ((get_route_cb)hostconf->cb_tree_match_route)(hostconf->router_tree,req);
+    if (handler) {
+        handler->on_req(handler, req);
+        return;
+    }
+    /**
+     * If no router found then try to find
+     * handlers from .conf file
+     */
+#endif
 
     /* setup pathconf, or redirect to "path/" */
     for (i = 0; i != hostconf->paths.size; ++i) {
