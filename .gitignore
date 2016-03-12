@@ -13,3 +13,11 @@ xcuserdata
 !include/h2o
 misc/test-ca/demoCA/newcerts/*.pem
 tmp/
+
+h2o
+libh2o-evloop.a
+libh2o-evloop.pc
+libh2o.a
+libh2o.pc
+t-00unit-evloop.t
+t-00unit-libuv.t
