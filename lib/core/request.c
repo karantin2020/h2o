@@ -25,7 +25,7 @@
 
 #define INITIAL_INBUFSZ 8192
 
-#ifdef WITH_ROUTER
+#if WITH_ROUTER
 typedef h2o_handler_t* (*get_route_cb)(void*,h2o_req_t *);
 #endif
 
@@ -142,7 +142,7 @@ static void process_hosted_request(h2o_req_t *req, h2o_hostconf_t *hostconf)
     req->hostconf = hostconf;
     req->pathconf = &hostconf->fallback_path;
 
-#ifdef WITH_ROUTER
+#if WITH_ROUTER
     /**
      * Get current router
      */
