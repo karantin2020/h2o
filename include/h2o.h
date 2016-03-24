@@ -56,6 +56,11 @@ extern "C" {
 #define H2O_USE_BROTLI 0
 #endif
 
+#ifndef WITH_ROUTER
+/* disabled for all but the standalone server, since the encoder is written in C++ */
+#define WITH_ROUTER 0
+#endif
+
 #ifndef H2O_MAX_HEADERS
 #define H2O_MAX_HEADERS 100
 #endif
@@ -247,7 +252,7 @@ struct st_h2o_hostconf_t {
      * list of path configurations
      */
     H2O_VECTOR(h2o_pathconf_t) paths;
-#ifdef WITH_ROUTER
+#if WITH_ROUTER
     /**
      * Router lib adds
      */
@@ -313,7 +318,7 @@ struct st_h2o_globalconf_t {
      * a NULL-terminated list of host contexts (h2o_hostconf_t)
      */
     h2o_hostconf_t **hosts;
-#ifdef WITH_ROUTER
+#if WITH_ROUTER
     /**
      * Pointer to create_router callback function
      */
