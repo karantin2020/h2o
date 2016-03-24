@@ -44,7 +44,6 @@ static h2o_hostconf_t *create_hostconf(h2o_globalconf_t *globalconf)
     hostconf->mimemap = globalconf->mimemap;
     h2o_mem_addref_shared(hostconf->mimemap);
 #if WITH_ROUTER
-    printf("WITH_ROUTER: %d\n", WITH_ROUTER);
     hostconf->router_tree = 
         ((fn_create_router)globalconf->cb_create_router)(globalconf->router_capacity);
 #endif
