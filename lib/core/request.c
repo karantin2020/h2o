@@ -140,9 +140,8 @@ static void process_hosted_request(h2o_req_t *req, h2o_hostconf_t *hostconf)
     h2o_pathconf_t *selected_pathconf = &hostconf->fallback_path;
     size_t i;
 
-    req->hostconf = hostconf;
-
 #if WITH_ROUTER
+    req->hostconf = hostconf;
     /**
      * Get current router
      */
