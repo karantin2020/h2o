@@ -247,6 +247,25 @@ struct st_h2o_hostconf_t {
      * list of path configurations
      */
     H2O_VECTOR(h2o_pathconf_t) paths;
+#ifdef WITH_ROUTER
+    /**
+     * Router lib adds
+     */
+    
+    /**
+     * Pointer to root router node
+     */
+    void *router_tree;
+    /**
+     * Pointer to get_matched_route_handler callback function
+     * returns h2o_handler_t *handler
+     */
+    void *cb_tree_match_route;
+    /**
+     * Pointer to free_router callback function
+     */
+    void *cb_free_router;
+#endif
     /**
      * catch-all path configuration
      */
@@ -294,6 +313,16 @@ struct st_h2o_globalconf_t {
      * a NULL-terminated list of host contexts (h2o_hostconf_t)
      */
     h2o_hostconf_t **hosts;
+#ifdef WITH_ROUTER
+    /**
+     * Pointer to create_router callback function
+     */
+    void *cb_create_router;
+    /**
+     * Default tree_route capacity size
+     */
+    int router_capacity;
+#endif
     /**
      * list of configurators
      */

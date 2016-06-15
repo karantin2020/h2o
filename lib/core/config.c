@@ -30,6 +30,11 @@
 #include "h2o/http1.h"
 #include "h2o/http2.h"
 
+#ifdef WITH_ROUTER
+typedef void* (*fn_create_router)(int);
+typedef void (*fn_free_router)(void*);
+#endif
+
 static h2o_hostconf_t *create_hostconf(h2o_globalconf_t *globalconf)
 {
     h2o_hostconf_t *hostconf = h2o_mem_alloc(sizeof(*hostconf));
@@ -38,11 +43,18 @@ static h2o_hostconf_t *create_hostconf(h2o_globalconf_t *globalconf)
     h2o_config_init_pathconf(&hostconf->fallback_path, globalconf, NULL, globalconf->mimemap);
     hostconf->mimemap = globalconf->mimemap;
     h2o_mem_addref_shared(hostconf->mimemap);
+#ifdef WITH_ROUTER
+    hostconf->router_tree = 
+        ((fn_create_router)globalconf->cb_create_router)(globalconf->router_capacity);
+#endif
     return hostconf;
 }
 
 static void destroy_hostconf(h2o_hostconf_t *hostconf)
 {
+#ifdef WITH_ROUTER
+    ((fn_free_router)hostconf->cb_free_router)(hostconf->router_tree);
+#endif
     size_t i;
 
     if (hostconf->authority.hostport.base != hostconf->authority.host.base)
